@@ -1,48 +1,72 @@
-const data = require("./dados"); // importando dados
+const dados = require("./dados");
 
 function main() {
-  const dailyValues = getDailyValues(data);
-  const minValue = getMinValue(dailyValues);
-  const maxValue = getMaxValue(dailyValues);
-  const daysAboveAverage = getDaysAboveAverage(dailyValues);
+  const diasValorados = diasComFaturamento(dados);
+  const menorValor = menorFaturamento(diasValorados);
+  const maiorValor = maiorFaturamento(diasValorados);
+  const acimaMedia = AcimaDaMedia(diasValorados);
 
-  console.log("Menor valor: ", minValue);
-  console.log("Maior valor: ", maxValue);
-  console.log("Dias acima da média: ", daysAboveAverage);
+  console.log("Valor do dia com menor faturamento: ", menorValor);
+  console.log("Valor do dia com maior faturamento: ", maiorValor);
+  console.log("Valor de dias com faturamento acima da média: ", acimaMedia);
 }
 
-function getDailyValues(data) {
-  return data.filter((item) => item.valor !== 0).map((item) => item.valor);
-}
-
-function getMinValue(values) {
-  // return Math.min(...values);
-  let minValue = values[0];
-  for (let i = 1; i < values.length; i++) {
-    if (values[i] < minValue) {
-      minValue = values[i];
+//verifica quais não tiveram faturamento e retorna um novo array
+function diasComFaturamento(dados) {
+  const diasComFaturamento = [];
+  for (let i = 0; i < dados.length; i++) {
+    if (dados[i].valor !== 0.0) {
+      diasComFaturamento.push(dados[i].valor);
     }
   }
-  return minValue;
+  return diasComFaturamento;
 }
 
-function getMaxValue(values) {
-  return Math.max(...values);
-}
-
-function getDaysAboveAverage(values) {
-  let sum = 0;
-  for (let i = 0; i < values.length; i++) {
-    sum += values[i];
-  }
-  const average = sum / values.length;
-  let count = 0;
-  for (let i = 0; i < values.length; i++) {
-    if (values[i] > average) {
-      count++;
+//dia com o menor faturamento
+function menorFaturamento(dados) {
+  let valorMin = dados[0];
+  for (let i = 1; i < dados.length; i++) {
+    if (dados[i] < valorMin) {
+      valorMin = dados[i];
     }
   }
-  return count;
+  return valorMin;
+}
+
+//dia com o maior faturamento
+function maiorFaturamento(dados) {
+  let valorMin = dados[0];
+  for (let i = 1; i < dados.length; i++) {
+    if (dados[i] > valorMin) {
+      valorMin = dados[i];
+    }
+  }
+  return valorMin;
+}
+
+//mostra dias com valor acima da media
+function AcimaDaMedia(dados) {
+  const media = calculoMedia(dados);
+  let acimaDaMedia = 0;
+  for (let i = 0; i < dados.length; i++) {
+    if (dados[i] > media) {
+      acimaDaMedia++;
+    }
+  }
+  return acimaDaMedia;
+}
+
+//calcula a media de valor
+function calculoMedia(valor) {
+  let soma = 0;
+  let qtd = 0;
+
+  for (let i = 0; i < valor.length; i++) {
+    soma += valor[i];
+    qtd++;
+  }
+
+  return soma / qtd;
 }
 
 main();
